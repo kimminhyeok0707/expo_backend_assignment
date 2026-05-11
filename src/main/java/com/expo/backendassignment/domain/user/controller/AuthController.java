@@ -1,5 +1,7 @@
 package com.expo.backendassignment.domain.user.controller;
 
+import com.expo.backendassignment.domain.user.dto.LoginRequest;
+import com.expo.backendassignment.domain.user.dto.LoginResponse;
 import com.expo.backendassignment.domain.user.dto.SignUpRequest;
 import com.expo.backendassignment.domain.user.dto.UserResponse;
 import com.expo.backendassignment.domain.user.service.AuthService;
@@ -72,5 +74,48 @@ public class AuthController {
 		UserResponse response = authService.signUp(request);
 		return ResponseEntity.status(HttpStatus.CREATED)
 			.body(ApiResponse.success("USER_CREATED", "회원가입이 완료되었습니다.", response));
+	}
+
+	/**
+	 * 로그인을 처리합니다.
+	 * 컨트롤러는 요청과 응답만 담당하고,
+	 * 사용자 조회, 비밀번호 검증, 토큰 발급과 저장은 서비스 계층에서 처리합니다.
+	 */
+	@Operation(
+		summary = "로그인",
+		description = "이메일과 비밀번호를 검증한 뒤 Access Token과 Refresh Token을 발급합니다.",
+		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+			description = "로그인 요청 정보",
+			required = true,
+			content = @Content(
+				mediaType = "application/json",
+				schema = @Schema(implementation = LoginRequest.class),
+				examples = @ExampleObject(
+					name = "로그인 예시",
+					value = """
+							{
+							   "email": "user12@example.com",
+							  "password": "Password123!1"
+							}
+						"""
+				)
+			)
+		),
+		responses = {
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(
+				responseCode = "200",
+				description = "로그인 성공",
+				content = @Content(schema = @Schema(implementation = ApiResponse.class))
+			),
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(
+				responseCode = "401",
+				description = "이메일 또는 비밀번호가 올바르지 않음"
+			)
+		}
+	)
+	@PostMapping("/login")
+	public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request) {
+		LoginResponse response = authService.login(request);
+		return ResponseEntity.ok(ApiResponse.success("LOGIN_SUCCESS", "로그인이 완료되었습니다.", response));
 	}
 }
