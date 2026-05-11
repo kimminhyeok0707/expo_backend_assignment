@@ -3,6 +3,8 @@ package com.expo.backendassignment.domain.user.controller;
 import com.expo.backendassignment.domain.user.dto.LoginRequest;
 import com.expo.backendassignment.domain.user.dto.LoginResponse;
 import com.expo.backendassignment.domain.user.dto.SignUpRequest;
+import com.expo.backendassignment.domain.user.dto.TokenRefreshRequest;
+import com.expo.backendassignment.domain.user.dto.TokenRefreshResponse;
 import com.expo.backendassignment.domain.user.dto.UserResponse;
 import com.expo.backendassignment.domain.user.service.AuthService;
 import com.expo.backendassignment.global.response.ApiResponse;
@@ -117,5 +119,47 @@ public class AuthController {
 	public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request) {
 		LoginResponse response = authService.login(request);
 		return ResponseEntity.ok(ApiResponse.success("LOGIN_SUCCESS", "로그인이 완료되었습니다.", response));
+	}
+
+	/**
+	 * Refresh Token 재발급을 처리합니다.
+	 * 컨트롤러는 요청과 응답만 담당하고,
+	 * 토큰 형식 검증과 DB 저장 토큰 확인, 새 토큰 발급은 서비스 계층에서 처리합니다.
+	 */
+	@Operation(
+		summary = "리프레시 토큰 재발급",
+		description = "유효한 Refresh Token을 검증한 뒤 새로운 Access Token과 Refresh Token을 발급합니다.",
+		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+			description = "리프레시 토큰 재발급 요청 정보",
+			required = true,
+			content = @Content(
+				mediaType = "application/json",
+				schema = @Schema(implementation = TokenRefreshRequest.class),
+				examples = @ExampleObject(
+					name = "리프레시 토큰 재발급 예시",
+					value = """
+						{
+						  "refreshToken": ""
+						}
+						"""
+				)
+			)
+		),
+		responses = {
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(
+				responseCode = "200",
+				description = "재발급 성공",
+				content = @Content(schema = @Schema(implementation = ApiResponse.class))
+			),
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(
+				responseCode = "401",
+				description = "유효하지 않거나 만료된 리프레시 토큰"
+			)
+		}
+	)
+	@PostMapping("/refresh")
+	public ResponseEntity<ApiResponse<TokenRefreshResponse>> refresh(@Valid @RequestBody TokenRefreshRequest request) {
+		TokenRefreshResponse response = authService.refresh(request);
+		return ResponseEntity.ok(ApiResponse.success("TOKEN_REFRESH_SUCCESS", "토큰이 재발급되었습니다.", response));
 	}
 }

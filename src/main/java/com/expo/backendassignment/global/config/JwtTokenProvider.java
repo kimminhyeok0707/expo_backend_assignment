@@ -14,6 +14,7 @@ import java.security.Key;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -109,12 +110,24 @@ public class JwtTokenProvider {
 		}
 	}
 
+	/**
+	 * 리프레시 토큰의 형식, 서명, 만료 여부와 토큰 타입을 함께 검증합니다.
+	 */
+	public void validateRefreshToken(String token) {
+		validateToken(token);
+
+		if (!REFRESH_TOKEN_TYPE.equals(extractTokenType(token))) {
+			throw new CustomException(ErrorCode.INVALID_TOKEN);
+		}
+	}
+
 	private String generateToken(String subject, String tokenType, Role role, long expirationMillis) {
 		Date issuedAt = new Date();
 		Date expiresAt = new Date(issuedAt.getTime() + expirationMillis);
 
 		return Jwts.builder()
 			.subject(subject)
+			.claim("nonce", UUID.randomUUID().toString())
 			.claim(TOKEN_TYPE_CLAIM, tokenType)
 			.claim(ROLE_CLAIM, role != null ? role.name() : null)
 			.issuedAt(issuedAt)

@@ -5,6 +5,8 @@ import com.expo.backendassignment.domain.user.User;
 import com.expo.backendassignment.domain.user.dto.LoginRequest;
 import com.expo.backendassignment.domain.user.dto.LoginResponse;
 import com.expo.backendassignment.domain.user.dto.SignUpRequest;
+import com.expo.backendassignment.domain.user.dto.TokenRefreshRequest;
+import com.expo.backendassignment.domain.user.dto.TokenRefreshResponse;
 import com.expo.backendassignment.domain.user.dto.UserResponse;
 import com.expo.backendassignment.domain.user.repository.UserRepository;
 import com.expo.backendassignment.global.config.JwtTokenProvider;
@@ -71,6 +73,30 @@ public class AuthService {
 	}
 
 	/**
+	 * Refresh Token을 검증한 뒤 새로운 Access Token과 Refresh Token을 재발급합니다.
+	 * 재발급 시 Refresh Token은 새 값으로 교체해 이전 토큰을 다시 사용할 수 없도록 처리합니다.
+	 */
+	@Transactional
+	public TokenRefreshResponse refresh(TokenRefreshRequest request) {
+		String refreshToken = request.getRefreshToken();
+
+		jwtTokenProvider.validateRefreshToken(refreshToken);
+
+		User user = userRepository.findByRefreshToken(refreshToken)
+			.orElseThrow(() -> new CustomException(ErrorCode.INVALID_TOKEN));
+
+		validateStoredRefreshToken(user, refreshToken);
+
+		String newAccessToken = jwtTokenProvider.generateAccessToken(user.getId(), user.getRole());
+		String newRefreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
+
+		user.updateRefreshToken(newRefreshToken, toLocalDateTime(jwtTokenProvider.extractExpiration(newRefreshToken)));
+		userRepository.save(user);
+
+		return TokenRefreshResponse.of(newAccessToken, newRefreshToken);
+	}
+
+	/**
 	 * 동일한 이메일이 이미 존재하는 경우 회원가입을 막습니다.
 	 */
 	private void validateDuplicatedEmail(String email) {
@@ -85,6 +111,19 @@ public class AuthService {
 	private void validatePassword(String rawPassword, String encodedPassword) {
 		if (!passwordEncoder.matches(rawPassword, encodedPassword)) {
 			throw new CustomException(ErrorCode.INVALID_CREDENTIALS);
+		}
+	}
+
+	/**
+	 * DB에 저장된 Refresh Token 값과 만료 시간이 현재 요청과 유효 상태를 만족하는지 검증합니다.
+	 */
+	private void validateStoredRefreshToken(User user, String refreshToken) {
+		if (user.getRefreshToken() == null || !user.getRefreshToken().equals(refreshToken)) {
+			throw new CustomException(ErrorCode.INVALID_TOKEN);
+		}
+
+		if (user.getRefreshTokenExpiredAt() == null || user.getRefreshTokenExpiredAt().isBefore(LocalDateTime.now())) {
+			throw new CustomException(ErrorCode.EXPIRED_TOKEN);
 		}
 	}
 
