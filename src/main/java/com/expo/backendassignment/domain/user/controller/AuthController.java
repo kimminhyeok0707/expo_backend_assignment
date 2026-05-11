@@ -93,10 +93,10 @@ public class AuthController {
 				examples = @ExampleObject(
 					name = "로그인 예시",
 					value = """
-							{
-							   "email": "user12@example.com",
-							  "password": "Password123!1"
-							}
+						{
+						  "email": "user12@example.com",
+						  "password": "Password123!1"
+						}
 						"""
 				)
 			)

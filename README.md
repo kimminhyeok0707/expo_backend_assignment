@@ -1,15 +1,5 @@
 
-## Tech Stack
 
-- Java 17
-- Spring Boot 3.5.0
-- Spring Web
-- Spring Data JPA
-- Spring Security
-- Spring Validation
-- MySQL
-- Lombok
-- Gradle
 
 ## Project Structure
 
@@ -32,29 +22,15 @@ src/main/java/com/expo/backendassignment
 - Database Name: `expo_auth`
 - Table Name: `users`
 - DB init script: [db/init.sql](./db/init.sql)
-- JPA ddl-auto: `validate`
 
-## Environment
 
-프로젝트 루트에 `.env` 파일을 만들고 아래 값을 입력합니다.
-
-```env
-MYSQL_URL=jdbc:mysql://127.0.0.1:3306/expo_auth?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-MYSQL_USERNAME=root
-MYSQL_PASSWORD=your_password
-JWT_SECRET=expo-backend-assignment-jwt-secret-key-2026-very-long-value
-JWT_ACCESS_TOKEN_EXPIRATION=900000
-JWT_REFRESH_TOKEN_EXPIRATION=1209600000
-```
-
-예시 파일은 [.env.example](./.env.example)에 있습니다.
 
 
 ## How To Run
 
 1. MySQL 서버를 실행합니다.
 2. [db/init.sql](./db/init.sql)을 실행해 `expo_auth` 데이터베이스와 `users` 테이블을 생성합니다.
-3. 프로젝트 루트에 `.env` 파일을 만들고 위 값을 입력합니다.
+3. 프로젝트 루트에 `.env` 파일을 만든다.
 4. `.\gradlew.bat bootRun` 또는 `./gradlew bootRun`으로 애플리케이션을 실행합니다.
 
 
@@ -91,12 +67,4 @@ JWT_REFRESH_TOKEN_EXPIRATION=1209600000
 - `.env` 파일이 없거나 값이 비어 있음
 - `MYSQL_URL`의 포트가 실제 MySQL 포트와 다름
 
-## Planned Features
 
-- 회원가입 API
-- 로그인 API
-- JWT Access Token 발급
-- Refresh Token 발급 및 재발급
-- 공통 응답 형식
-- Global Exception Handler
-- 에러 코드 및 메시지 정의

@@ -31,8 +31,8 @@ public class AuthService {
 
 	/**
 	 * 회원가입을 처리하고 응답 전용 DTO를 반환합니다.
-	 * 비밀번호는 원문 저장을 막기 위해 반드시 암호화해서 저장하고,
-	 * 엔티티는 내부 모델이므로 외부 응답에는 DTO로 변환해서 반환합니다.
+	 * 비밀번호는 원문 노출을 막기 위해 반드시 암호화해서 저장하고,
+	 * 엔티티는 내부 모델이므로 응답에는 DTO로 변환한 데이터만 반환합니다.
 	 */
 	@Transactional
 	public UserResponse signUp(SignUpRequest request) {
@@ -51,8 +51,8 @@ public class AuthService {
 
 	/**
 	 * 로그인을 처리하고 Access Token, Refresh Token, 사용자 응답 정보를 반환합니다.
-	 * 비밀번호는 평문 비교가 아닌 암호화 해시 비교를 사용해야 하므로 PasswordEncoder로 검증하고,
-	 * 응답에는 엔티티를 직접 노출하지 않기 위해 DTO로 변환한 사용자 정보만 담아 반환합니다.
+	 * 비밀번호는 평문 비교가 아닌 암호화된 값 비교가 필요하므로 PasswordEncoder로 검증하고,
+	 * 응답에는 엔티티를 직접 노출하지 않기 위해 DTO로 변환한 사용자 정보만 반환합니다.
 	 */
 	@Transactional
 	public LoginResponse login(LoginRequest request) {
@@ -89,7 +89,7 @@ public class AuthService {
 	}
 
 	/**
-	 * 토큰 만료 시각을 엔티티 저장 형식인 LocalDateTime으로 변환합니다.
+	 * 토큰 만료 시각을 엔티티 저장에 사용할 LocalDateTime으로 변환합니다.
 	 */
 	private LocalDateTime toLocalDateTime(java.util.Date expiration) {
 		return LocalDateTime.ofInstant(expiration.toInstant(), ZoneId.systemDefault());

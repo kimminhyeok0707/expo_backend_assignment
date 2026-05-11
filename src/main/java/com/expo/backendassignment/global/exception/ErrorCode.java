@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
 
+	AUTHENTICATION_REQUIRED(HttpStatus.UNAUTHORIZED, "AUTH_000", "인증이 필요합니다."),
 	INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "COMMON_001", "잘못된 요청입니다."),
 	INVALID_TYPE_VALUE(HttpStatus.BAD_REQUEST, "COMMON_002", "요청 값의 타입이 올바르지 않습니다."),
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_003", "서버 내부 오류가 발생했습니다."),
