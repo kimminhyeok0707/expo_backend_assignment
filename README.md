@@ -34,11 +34,28 @@ src/main/java/com/expo/backendassignment
 - DB init script: [db/init.sql](./db/init.sql)
 - JPA ddl-auto: `validate`
 
+## Environment
+
+프로젝트 루트에 `.env` 파일을 만들고 아래 값을 입력합니다.
+
+```env
+MYSQL_URL=jdbc:mysql://127.0.0.1:3306/expo_auth?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+MYSQL_USERNAME=root
+MYSQL_PASSWORD=your_password
+JWT_SECRET=expo-backend-assignment-jwt-secret-key-2026-very-long-value
+JWT_ACCESS_TOKEN_EXPIRATION=900000
+JWT_REFRESH_TOKEN_EXPIRATION=1209600000
+```
+
+예시 파일은 [.env.example](./.env.example)에 있습니다.
+
 
 ## How To Run
 
 1. MySQL 서버를 실행합니다.
 2. [db/init.sql](./db/init.sql)을 실행해 `expo_auth` 데이터베이스와 `users` 테이블을 생성합니다.
+3. 프로젝트 루트에 `.env` 파일을 만들고 위 값을 입력합니다.
+4. `.\gradlew.bat bootRun` 또는 `./gradlew bootRun`으로 애플리케이션을 실행합니다.
 
 
 ## Shared Local Setup
@@ -54,6 +71,8 @@ src/main/java/com/expo/backendassignment
 3. MySQL Server를 실행합니다.
 4. MySQL Workbench에서 새 연결을 생성합니다.
 5. [db/init.sql](./db/init.sql)을 실행해 `expo_auth` 데이터베이스와 `users` 테이블을 생성합니다.
+6. 프로젝트 루트에 `.env` 파일을 생성하고 위 예시 값을 입력합니다.
+7. `.\gradlew.bat bootRun`으로 애플리케이션을 실행합니다.
 
 
 성공 기준은 아래와 같습니다.
@@ -61,6 +80,7 @@ src/main/java/com/expo/backendassignment
 - `.env`를 읽지 못했다는 에러가 없음
 - MySQL 연결 에러가 없음
 - `Unknown database 'expo_auth'` 에러가 없음
+- `JWT_SECRET`, `JWT_ACCESS_TOKEN_EXPIRATION`, `JWT_REFRESH_TOKEN_EXPIRATION` 누락 에러가 없음
 - Spring Boot가 정상 기동됨
 
 자주 실패하는 원인은 아래와 같습니다.
@@ -68,6 +88,7 @@ src/main/java/com/expo/backendassignment
 - Java 버전이 17이 아님
 - MySQL 서버가 실행 중이 아님
 - `db/init.sql`을 실행하지 않음
+- `.env` 파일이 없거나 값이 비어 있음
 - `MYSQL_URL`의 포트가 실제 MySQL 포트와 다름
 
 ## Planned Features
