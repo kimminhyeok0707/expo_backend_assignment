@@ -31,7 +31,7 @@ src/main/java/com/expo/backendassignment
 
 1. MySQL 서버를 실행합니다.
 2. [db/init.sql](./db/init.sql)을 실행해 `expo_auth` 데이터베이스와 `users` 테이블을 생성합니다.
-3. 프로젝트 루트에 `.env` 파일을 만들고 위 값을 입력합니다.
+3. 프로젝트 루트에 `.env` 파일을 만든다.
 4. `.\gradlew.bat bootRun` 또는 `./gradlew bootRun`으로 애플리케이션을 실행합니다.
 
 

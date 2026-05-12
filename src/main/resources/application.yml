@@ -18,6 +18,9 @@ spring:
   sql:
     init:
       mode: never
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
 
 logging:
   level:
@@ -27,3 +30,7 @@ jwt:
   secret: ${JWT_SECRET}
   access-token-expiration: ${JWT_ACCESS_TOKEN_EXPIRATION}
   refresh-token-expiration: ${JWT_REFRESH_TOKEN_EXPIRATION}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
